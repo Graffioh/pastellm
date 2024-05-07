@@ -1,10 +1,19 @@
+const textArea = document.getElementById("input-text");
+
+// get text if in chrome storage
 chrome.storage.local.get("inputText", (result) => {
   const savedInputText = result.inputText;
-  const textArea = document.getElementById("input-text");
 
   textArea.value = savedInputText ?? "";
 });
 
+// set chrome storage text every keyup event
+textArea.addEventListener("keyup", () => {
+  const inputText = document.getElementById("input-text").value;
+  chrome.storage.local.set({ inputText: inputText });
+});
+
+// main logic
 document.getElementById("paste-btn").addEventListener("click", async () => {
   const inputText = document.getElementById("input-text").value;
 
@@ -67,14 +76,10 @@ function pasteIntoInputFields(text) {
   }
 }
 
-document.getElementById("input-text").addEventListener("keydown", (event) => {
+// submit with enter
+textArea.addEventListener("keydown", (event) => {
   if (event.code === "Enter" && !event.shiftKey) {
     event.preventDefault();
     document.getElementById("paste-btn").click();
   }
-});
-
-document.getElementById("input-text").addEventListener("keyup", () => {
-  const inputText = document.getElementById("input-text").value;
-  chrome.storage.local.set({ inputText: inputText });
 });
