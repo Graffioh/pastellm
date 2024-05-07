@@ -1,3 +1,10 @@
+chrome.storage.local.get("inputText", (result) => {
+  const savedInputText = result.inputText;
+  const textArea = document.getElementById("input-text");
+
+  textArea.value = savedInputText ?? "";
+});
+
 document.getElementById("paste-btn").addEventListener("click", async () => {
   const inputText = document.getElementById("input-text").value;
 
@@ -62,7 +69,12 @@ function pasteIntoInputFields(text) {
 
 document.getElementById("input-text").addEventListener("keydown", (event) => {
   if (event.code === "Enter" && !event.shiftKey) {
-    event.preventDefault(); 
+    event.preventDefault();
     document.getElementById("paste-btn").click();
   }
+});
+
+document.getElementById("input-text").addEventListener("keyup", () => {
+  const inputText = document.getElementById("input-text").value;
+  chrome.storage.local.set({ inputText: inputText });
 });
