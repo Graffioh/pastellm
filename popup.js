@@ -1,8 +1,16 @@
 document.getElementById("paste-btn").addEventListener("click", async () => {
   const inputText = document.getElementById("input-text").value;
 
+  selectedUrls = [
+    "https://chatgpt.com/*",
+    "https://groq.com/*",
+    "https://claude.ai/*",
+    "https://chat.deepseek.com/*",
+  ];
+
   const tabs = await chrome.tabs.query({
     currentWindow: true,
+    url: selectedUrls,
   });
 
   for (const tab of tabs) {
