@@ -59,3 +59,10 @@ function pasteIntoInputFields(text) {
     }
   }
 }
+
+document.getElementById("input-text").addEventListener("keydown", (event) => {
+  if (event.code === "Enter" && !event.shiftKey) {
+    event.preventDefault(); 
+    document.getElementById("paste-btn").click();
+  }
+});
