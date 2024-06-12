@@ -1,7 +1,7 @@
 # pastellm
 *Paste text into multiple LLM chats all at once.*
 
-Currently supported chats: ChatGPT, ClaudeAI, Deepseek, Groq, Mistral.
+Currently supported chats: ChatGPT, ClaudeAI, Deepseek, Groq, Mistral, Gemini.
 
 (Remember to open interested chat tabs before pasting otherwise it wont work)
 

@@ -23,6 +23,7 @@ document.getElementById("paste-btn").addEventListener("click", async () => {
     "https://claude.ai/*",
     "https://chat.deepseek.com/*",
     "https://chat.mistral.ai/*",
+    "https://gemini.google.com/*",
   ];
 
   const tabs = await chrome.tabs.query({
@@ -48,6 +49,8 @@ function pasteIntoInputFields(text) {
   // for claude.ai
   const pFields = document.querySelectorAll('div[contenteditable="true"] p');
 
+  const geminiButton = document.querySelector(".send-button");
+
   if (pFields.length === 1) {
     for (const p of pFields) {
       p.textContent = text;
@@ -62,6 +65,27 @@ function pasteIntoInputFields(text) {
         p.dispatchEvent(enterEvent);
       }, 500);
     }
+
+    // this shit is for gemini :)
+    const observer = new MutationObserver((mutationsList, observer) => {
+      for (let mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          const geminiButton = document.querySelector(".send-button");
+          if (geminiButton) {
+            const inputArea = document.querySelector("div[contenteditable]");
+            if (inputArea) {
+              inputArea.textContent = text;
+              inputArea.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+
+            geminiButton.click();
+            observer.disconnect();
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
   } else {
     for (const inputField of inputFields) {
       inputField.value = text;
