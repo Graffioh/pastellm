@@ -22,6 +22,7 @@ document.getElementById("paste-btn").addEventListener("click", async () => {
     "https://groq.com/*",
     "https://claude.ai/*",
     "https://chat.deepseek.com/*",
+    "https://chat.mistral.ai/*",
   ];
 
   const tabs = await chrome.tabs.query({
@@ -39,7 +40,7 @@ document.getElementById("paste-btn").addEventListener("click", async () => {
 });
 
 function pasteIntoInputFields(text) {
-  // for chatgpt, deepseek, groq
+  // for chatgpt, deepseek, groq, mistral
   const inputFields = document.querySelectorAll(
     'input[type="text"], input[type="search"], textarea, #prompt-textarea'
   );
