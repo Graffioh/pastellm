@@ -1,4 +1,6 @@
 const textArea = document.getElementById("input-text");
+const pasteBtn = document.getElementById("paste-btn");
+const clearBtn = document.getElementById("clear-btn");
 
 // get text if in chrome storage
 chrome.storage.local.get("inputText", (result) => {
@@ -9,13 +11,13 @@ chrome.storage.local.get("inputText", (result) => {
 
 // set chrome storage text every keyup event
 textArea.addEventListener("keyup", () => {
-  const inputText = document.getElementById("input-text").value;
+  const inputText = textArea.value;
   chrome.storage.local.set({ inputText: inputText });
 });
 
 // main logic
-document.getElementById("paste-btn").addEventListener("click", async () => {
-  const inputText = document.getElementById("input-text").value;
+pasteBtn.addEventListener("click", async () => {
+  const inputText = textArea.value;
 
   selectedUrls = [
     "https://chatgpt.com/*",
@@ -48,8 +50,6 @@ function pasteIntoInputFields(text) {
 
   // for claude.ai
   const pFields = document.querySelectorAll('div[contenteditable="true"] p');
-
-  const geminiButton = document.querySelector(".send-button");
 
   if (pFields.length === 1) {
     for (const p of pFields) {
@@ -105,6 +105,13 @@ function pasteIntoInputFields(text) {
 textArea.addEventListener("keydown", (event) => {
   if (event.code === "Enter" && !event.shiftKey) {
     event.preventDefault();
-    document.getElementById("paste-btn").click();
+    pasteBtn.click();
   }
+});
+
+clearBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  textArea.value = "";
+  chrome.storage.local.set({ inputText: "" });
 });
