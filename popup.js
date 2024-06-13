@@ -42,15 +42,36 @@ pasteBtn.addEventListener("click", async () => {
   }
 });
 
+// to refactor
 function pasteIntoInputFields(text) {
   // for chatgpt, deepseek, groq, mistral
   const inputFields = document.querySelectorAll(
     'input[type="text"], input[type="search"], textarea, #prompt-textarea'
   );
 
+  // for gemini
+  const geminiButton = document.querySelector(".send-button");
+  if (geminiButton) {
+    const inputArea = document.querySelector("div[contenteditable]");
+    if (inputArea) {
+      inputArea.textContent = text;
+      inputArea.dispatchEvent(new Event("input", { bubbles: true }));
+      setTimeout(() => {
+        const enterEvent = new KeyboardEvent("keydown", {
+          bubbles: true,
+          cancelable: true,
+          keyCode: 13,
+        });
+        inputArea.dispatchEvent(enterEvent);
+        geminiButton.click();
+      });
+    }
+  }
+  
+  // for mistral
+
   // for claude.ai
   const pFields = document.querySelectorAll('div[contenteditable="true"] p');
-
   if (pFields.length === 1) {
     for (const p of pFields) {
       p.textContent = text;
@@ -65,27 +86,6 @@ function pasteIntoInputFields(text) {
         p.dispatchEvent(enterEvent);
       }, 500);
     }
-
-    // this shit is for gemini :)
-    const observer = new MutationObserver((mutationsList, observer) => {
-      for (let mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          const geminiButton = document.querySelector(".send-button");
-          if (geminiButton) {
-            const inputArea = document.querySelector("div[contenteditable]");
-            if (inputArea) {
-              inputArea.textContent = text;
-              inputArea.dispatchEvent(new Event("input", { bubbles: true }));
-            }
-
-            geminiButton.click();
-            observer.disconnect();
-          }
-        }
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
   } else {
     for (const inputField of inputFields) {
       inputField.value = text;
