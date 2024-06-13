@@ -4,7 +4,7 @@
     "version": "1.0.2",
     "manifest_version": 3,
     "permissions": ["activeTab", "scripting", "storage"],
-    "host_permissions": ["https://chatgpt.com/*", "https://groq.com/*", "https://claude.ai/*", "https://chat.deepseek.com/*, https://chat.mistral.ai/*, https://gemini.google.com/*"],
+    "host_permissions": ["https://chatgpt.com/*", "https://groq.com/*", "https://claude.ai/*", "https://chat.deepseek.com/*", "https://chat.mistral.ai/chat/*", "https://gemini.google.com/*"],
     "action": {
       "default_popup": "popup.html",
       "default_icon": "arrows.png"

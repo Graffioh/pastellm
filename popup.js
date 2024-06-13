@@ -34,6 +34,7 @@ pasteBtn.addEventListener("click", async () => {
   });
 
   for (const tab of tabs) {
+    console.log("YOOO")
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: pasteIntoInputFields,
