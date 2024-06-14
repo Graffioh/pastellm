@@ -15,6 +15,22 @@ textArea.addEventListener("keyup", () => {
   chrome.storage.local.set({ inputText: inputText });
 });
 
+// submit with enter
+textArea.addEventListener("keydown", (event) => {
+  if (event.code === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    pasteBtn.click();
+  }
+});
+
+// clear textarea
+clearBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  textArea.value = "";
+  chrome.storage.local.set({ inputText: "" });
+});
+
 // main logic
 pasteBtn.addEventListener("click", async () => {
   const inputText = textArea.value;
@@ -34,7 +50,6 @@ pasteBtn.addEventListener("click", async () => {
   });
 
   for (const tab of tabs) {
-    console.log("YOOO")
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: pasteIntoInputFields,
@@ -43,76 +58,47 @@ pasteBtn.addEventListener("click", async () => {
   }
 });
 
-// to refactor
 function pasteIntoInputFields(text) {
-  // for chatgpt, deepseek, groq, mistral
-  const inputFields = document.querySelectorAll(
-    'input[type="text"], input[type="search"], textarea, #prompt-textarea'
-  );
+  // for claude.ai and gemini
+  const inputAreas = document.querySelectorAll("div[contenteditable] p");
+  const isClaudeOrGemini = inputAreas.length === 1;
 
-  // for gemini
-  const geminiButton = document.querySelector(".send-button");
-  if (geminiButton) {
-    const inputArea = document.querySelector("div[contenteditable]");
-    if (inputArea) {
-      inputArea.textContent = text;
-      inputArea.dispatchEvent(new Event("input", { bubbles: true }));
-      setTimeout(() => {
-        const enterEvent = new KeyboardEvent("keydown", {
-          bubbles: true,
-          cancelable: true,
-          keyCode: 13,
-        });
-        inputArea.dispatchEvent(enterEvent);
-        geminiButton.click();
-      });
-    }
-  }
-  
-  // for mistral
+  if (isClaudeOrGemini) {
+    const input = inputAreas[0];
+    const geminiButton = document.querySelector(".send-button");
 
-  // for claude.ai
-  const pFields = document.querySelectorAll('div[contenteditable="true"] p');
-  if (pFields.length === 1) {
-    for (const p of pFields) {
-      p.textContent = text;
-      p.dispatchEvent(new Event("input", { bubbles: true }));
-      p.focus();
-      setTimeout(function () {
-        const enterEvent = new KeyboardEvent("keydown", {
-          bubbles: true,
-          cancelable: true,
-          keyCode: 13,
-        });
-        p.dispatchEvent(enterEvent);
-      }, 500);
-    }
-  } else {
-    for (const inputField of inputFields) {
-      inputField.value = text;
-      inputField.dispatchEvent(new Event("input", { bubbles: true }));
-      inputField.focus();
+    input.textContent = text;
+    setTimeout(function () {
       const enterEvent = new KeyboardEvent("keydown", {
         bubbles: true,
         cancelable: true,
         keyCode: 13,
       });
-      inputField.dispatchEvent(enterEvent);
-    }
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(enterEvent);
+
+      if (geminiButton) {
+        geminiButton.click();
+      }
+    }, 500);
+
+    return;
+  }
+
+  // for chatgpt, deepseek, groq, mistral
+  const inputFields = document.querySelectorAll(
+    'input[type="text"], input[type="search"], textarea, #prompt-textarea'
+  );
+
+  for (const inputField of inputFields) {
+    inputField.value = text;
+    inputField.dispatchEvent(new Event("input", { bubbles: true }));
+    inputField.focus();
+    const enterEvent = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      keyCode: 13,
+    });
+    inputField.dispatchEvent(enterEvent);
   }
 }
-
-// submit with enter
-textArea.addEventListener("keydown", (event) => {
-  if (event.code === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    pasteBtn.click();
-  }
-});
-
-clearBtn.addEventListener("click", (event) => {
-  event.preventDefault();
-
-  textArea.value = "";
-  chrome.storage.local.set({ inputText: "" });
-});

@@ -1,7 +1,7 @@
 {
     "name": "pastellm",
     "description": "Paste text into multiple llm chats",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "manifest_version": 3,
     "permissions": ["activeTab", "scripting", "storage"],
     "host_permissions": ["https://chatgpt.com/*", "https://groq.com/*", "https://claude.ai/*", "https://chat.deepseek.com/*", "https://chat.mistral.ai/chat/*", "https://gemini.google.com/*"],
