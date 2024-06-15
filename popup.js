@@ -59,46 +59,35 @@ pasteBtn.addEventListener("click", async () => {
 });
 
 function pasteIntoInputFields(text) {
-  // for claude.ai and gemini
-  const inputAreas = document.querySelectorAll("div[contenteditable] p");
-  const isClaudeOrGemini = inputAreas.length === 1;
-
-  if (isClaudeOrGemini) {
-    const input = inputAreas[0];
-    const geminiButton = document.querySelector(".send-button");
-
-    input.textContent = text;
-    setTimeout(function () {
-      const enterEvent = new KeyboardEvent("keydown", {
-        bubbles: true,
-        cancelable: true,
-        keyCode: 13,
-      });
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(enterEvent);
-
-      if (geminiButton) {
-        geminiButton.click();
-      }
-    }, 500);
-
-    return;
-  }
-
   // for chatgpt, deepseek, groq, mistral
-  const inputFields = document.querySelectorAll(
+  const inputType1 = document.querySelectorAll(
     'input[type="text"], input[type="search"], textarea, #prompt-textarea'
   );
+  // for claude.ai and gemini
+  const inputType2 = document.querySelectorAll("div[contenteditable] p");
 
-  for (const inputField of inputFields) {
-    inputField.value = text;
-    inputField.dispatchEvent(new Event("input", { bubbles: true }));
-    inputField.focus();
+  const isClaudeOrGemini = inputType2.length === 1;
+  const geminiButton = document.querySelector(".send-button");
+
+  const input = isClaudeOrGemini ? inputType2[0] : inputType1[0];
+
+  if (isClaudeOrGemini) {
+    input.textContent = text;
+  } else {
+    input.value = text;
+  }
+
+  setTimeout(function () {
     const enterEvent = new KeyboardEvent("keydown", {
       bubbles: true,
       cancelable: true,
       keyCode: 13,
     });
-    inputField.dispatchEvent(enterEvent);
-  }
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(enterEvent);
+
+    if (geminiButton) {
+      geminiButton.click();
+    }
+  }, 500);
 }
